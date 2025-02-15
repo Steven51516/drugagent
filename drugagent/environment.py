@@ -331,11 +331,6 @@ class Environment:
                 shutil.copy2(src_path, dst_path)
 
     def run(self):
-        # idea = "Idea 3: Use an advanced graph transformer to encode both drug and protein, you must create a protein graph before that"
-
-        # # idea = "Idea 1: Use SVM with fingerprint to extract features from drug."
-        # observation = self.create_instructor_agent_and_run(0, idea, initial_context="")
-        # print(observation)
         planner_actions = ["Reflection", "Generate Idea", "Understand File", "List Files", "Final Answer", "Investigate Idea", "Report Failure"]
         self._action_infos_dict["Planner"] = {key: item for key, item in self.action_infos.items() if key in planner_actions}
         planner_agent = PlannerAgent(self._args, self, "Planner")
