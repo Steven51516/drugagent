@@ -1,0 +1,5 @@
+Your task is to design and train a model on DAVIS dataset on drug target interaction task. 
+Three datasets train.csv, val.csv, test.csv are available at the same dir to train.py. This dataset contain a Drug represented by SMILE string, a Target represented by AA sequence, and a Y label.
+This is a binary classification problem where the Y label has two possible values, 0 and 1. 
+You are required to complete the train.py script by implementing the logic to train a model. Experiment with different models and feature selection techniques to achieve better performance.
+Evaluate the model's performance using roc-auc as the primary metric. Once you are satisfied with the performance, use the test dataset to generate predictions probabilities and save the results in a file named submission.csv.

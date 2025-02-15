@@ -1,0 +1,33 @@
+Part 1: Generating Protein Embeddings with Pretrained Models
+
+Description:
+This section demonstrates how to generate protein sequence embeddings using pretrained models through the ProteinFeaturizer class with the esm method. These embeddings are helpful for various downstream tasks such as protein classification, regression, and similarity search. The ESM (Evolutionary Scale Modeling) model generates 1280-dimensional embeddings, which represent protein sequence features learned from large datasets.
+
+How to Use:
+
+Import the ProteinFeaturizer class:
+from agent_tools import ProteinFeaturizer
+
+Create a ProteinFeaturizer object with the esm method:
+featurizer = ProteinFeaturizer(method="esm")
+
+Use the ProteinFeaturizer object to generate embeddings for a protein sequence:
+sequence = "MKTAYIAKQRQISFVKSHFSRQ"
+embedding = featurizer(sequence)
+
+Example:
+from agent_tools import ProteinFeaturizer
+
+Initialize the featurizer with the ESM method
+featurizer = ProteinFeaturizer(method="esm")
+
+Generate embeddings for a protein sequence
+sequence = "MKTAYIAKQRQISFVKSHFSRQ"
+embedding = featurizer(sequence)
+
+print(embedding) # Output: A numpy array representing the embedding with shape (1280,)
+
+
+################################################
+Part 2: Fine-tuning Pretrained Models
+Pretrained Protein Models are relatively large so prevent fine-tuning them

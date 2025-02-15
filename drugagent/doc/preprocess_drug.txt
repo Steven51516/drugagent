@@ -1,0 +1,106 @@
+################################################
+Part 1: Molecule Fingerprinting
+
+Description: This guide shows you how to convert SMILES strings into molecular fingerprints (embeddings) using different methods. Molecular fingerprints are useful for machine learning and computational chemistry tasks. 
+
+Supported Fingerprinting Methods:
+Here are the available fingerprint types you can use:
+
+How to Use:
+1. First, import the MoleculeFingerprint class:
+   from agent_tools import DrugFeaturizer
+
+2. Then, create a MoleculeFingerprint object, specifying the fingerprint method you want to use:
+   featurizer = DrugFeaturizer(method='FingerprintType')
+
+Supported Fingerprint Methods:
+- ECFP2: Extended Connectivity Fingerprint with a radius of 2.
+- ECFP4: Extended Connectivity Fingerprint with a radius of 4.
+- ECFP6: Extended Connectivity Fingerprint with a radius of 6.
+- MACCS: MACCS keys (166-bit vector).
+- Daylight: Daylight fingerprint (a type of topological fingerprint).
+- Morgan: Morgan fingerprint (another name for ECFP).
+- PubChem: PubChem fingerprint (based on PubChem database).
+
+Example:
+
+Import the DrugFeaturizer class:
+from agent_tools import DrugFeaturizer
+
+Create a DrugFeaturizer object, specifying the fingerprint method:
+featurizer = DrugFeaturizer(method='ECFP6')
+
+Use the DrugFeaturizer object to featurize SMILES strings:
+smiles_list = ["CCO", "CCC", "CCN"]
+fingerprints = featurizer(smiles_list)
+
+################################################
+Part 2: Molecule Graph Construction
+
+Description: In addition to fingerprints, molecules can also be represented as graphs for graph-based machine learning models. This section covers how to construct molecular graphs from SMILES strings using two different methods: DGL (Deep Graph Library) and PG (PyTorch Geometric).
+
+How to Use:
+1. First, import the MoleculeFingerprint class:
+   from agent_tools import DrugFeaturizer
+
+2. Then, create a MoleculeFingerprint object, specifying the fingerprint method you want to use:
+   featurizer = DrugFeaturizer(method='Graph Type(dgl or pyg)')
+
+Supported methods:
+dgl: The output is a DGLGraph object with:
+Node features (h): A tensor of shape [num_nodes, 74], where each node represents an atom, and the 74-dimensional feature vector represents various atom properties (e.g., atomic number, atom type, hybridization, etc.).
+Edge features (e): A tensor of shape [num_edges, 13], where each edge represents a bond, and the 13-dimensional feature vector represents properties of the bond (e.g., bond type, aromaticity, bond length, etc.).
+
+Example:
+from agent_tools import DrugFeaturizer
+featurizer = DrugFeaturizer(method='dgl')
+smiles = "CCO"
+dgl_graph = featurizer(smiles)
+# The output will be a DGLGraph with the following structure:
+# Graph(num_nodes=3, num_edges=5, 
+#       ndata_schemes={'h': Scheme(shape=(74,), dtype=torch.float32)}, 
+#       edata_schemes={'e': Scheme(shape=(13,), dtype=torch.float32)})
+
+
+pyg: The output is a torch_geometric.data.Data object with:
+edge_index: A tensor of shape [2, num_edges] representing the connectivity between nodes (atoms).
+Node features (h): A tensor of shape [num_nodes, 74], where each node corresponds to an atom, and the 74-dimensional feature vector represents properties of the atom.
+Edge features (e): A tensor of shape [num_edges, 13], where each edge corresponds to a bond, and the 13-dimensional feature vector represents properties of the bond.
+Example:
+from agent_tools import DrugFeaturizer
+featurizer = DrugFeaturizer(method='pyg')
+smiles = "CCC"
+pyg_graph = featurizer(smiles)
+print(pyg_graph)
+# The output will be a PyTorch Geometric Data object with the following structure:
+# Data(edge_index=[2, 86], h=[28, 74], e=[86, 13])
+
+
+##################################################
+Part 3: Other Encoding - Onehot for CNN
+
+Description:
+This function converts a SMILES string into a one-hot encoded matrix representation, which is designed for CNN(Convolutional Neural Network).
+
+### Output:
+- **Return Type**: `np.ndarray`
+- **Shape**: `(63 channels x 100 max sequence length)`
+
+How to Use:
+
+#Import the DrugFeaturizer class:
+from agent_tools import DrugFeaturizer
+
+C#reate a DrugFeaturizer object, specifying the onehot method:
+featurizer = DrugFeaturizer(method='onehot')
+
+#Use the featurizer to convert SMILES to a one-hot encoded matrix:
+smiles = "CCO"
+one_hot_matrix = featurizer(smiles)
+
+# Output shape: (63, 100) 
+print(one_hot_matrix.shape)  # Output: (63 channels x 100 max sequence length)
+
+# The matrix will be a 63x100 array where each column corresponds to a character in the SMILES string
+# and each row represents a one-hot encoding of a character in the SMILES alphabet (defined in `smiles_char`).
+##################################################

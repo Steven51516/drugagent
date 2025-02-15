@@ -1,0 +1,79 @@
+################################################
+Part 1: Protein Fingerprinting
+
+Description:
+This section demonstrates how to generate protein fingerprints using various methods through the ProteinFeaturizer class. Protein fingerprints are useful for machine learning tasks related to protein structure, function, and interactions.
+
+Supported Fingerprint Methods:
+Here are the available fingerprint types you can use:
+
+
+aac: Represents the frequency of amino acids in a protein. Dim = 8420
+quasi: A sequence-based feature representing sequence order. Dim = 100
+ct: A fingerprint capturing amino acid triplet compositions in a sequence. Dim = 343
+
+How to Use:
+
+Import the ProteinFeaturizer class:
+from agent_tools import ProteinFeaturizer
+
+Create a ProteinFeaturizer object with the desired method:
+featurizer = ProteinFeaturizer(method="aac")
+
+Use the ProteinFeaturizer object to generate fingerprints for a list of protein sequences:
+protein_list = ["ACDEFGHIKLMNPQRSTVWY", "MKTAYIAKQRQISFVKSHFSRQ", "GLSDGEWQQVLNVWGK"]
+fingerprints = featurizer(protein_list)
+
+Examples:
+from agent_tools import ProteinFeaturizer
+
+Generate Quasi-sequence Order fingerprints for a list of protein sequences
+featurizer = ProteinFeaturizer(method="quasi")
+protein_list = ["ACDEFGHIKLMNPQRSTVWY", "MKTAYIAKQRQISFVKSHFSRQ", "GLSDGEWQQVLNVWGK"]
+quasi_fingerprints = featurizer(protein_list)
+print(quasi_fingerprints)
+
+Generate AAC fingerprints for a list of protein sequences
+featurizer = ProteinFeaturizer(method="aac")
+aac_fingerprints = featurizer(protein_list)
+print(aac_fingerprints)
+
+Generate Conjoint Triad fingerprints for a list of protein sequences
+featurizer = ProteinFeaturizer(method="ct")
+ct_fingerprints = featurizer(protein_list)
+print(ct_fingerprints)
+
+################################################
+Part 2: Protein Graph Construction
+The ProteinFeaturizer class does not support Protein graph construction as no 3D information is provided by protein sequence.
+
+################################################
+Part 3: Protein One-Hot Encoding for CNN
+
+Description:
+This section demonstrates how to convert protein sequences into one-hot encoded matrices for Convolutional Neural Networks (CNNs). One-hot encoding is commonly used for deep learning models and provides a binary representation for each amino acid.
+
+How to Use:
+
+Import the ProteinFeaturizer class:
+from agent_tools import ProteinFeaturizer
+
+Create a ProteinFeaturizer object with the onehot method:
+featurizer = ProteinFeaturizer(method="onehot")
+
+Use the ProteinFeaturizer object to generate one-hot encoding for a protein sequence:
+protein_seq = "ACDEFGHIKLMNPQRSTVWY"
+one_hot_matrix = featurizer(protein_seq)
+
+Example:
+
+from agent_tools import ProteinFeaturizer
+
+featurizer = ProteinFeaturizer(method="onehot")
+protein_seq = "ACDEFGHIKLMNPQRSTVWY"
+one_hot_matrix = featurizer(protein_seq)
+
+print(one_hot_matrix.shape) # Output: (20, 1000)
+
+
+

@@ -1,0 +1,15 @@
+
+numpy
+tensorflow
+torch
+torchvision
+transformers
+pandas
+litellm
+torch-geometric
+dgl
+dgllife
+pytdc
+keras
+xgboost
+anthropic

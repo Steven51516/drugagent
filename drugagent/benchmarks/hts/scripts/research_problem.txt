@@ -1,0 +1,6 @@
+Your task is to design and train a model using the PAMPA dataset for the ADMET task. The dataset includes three files: train.csv, val.csv, and test.csv, all located in the same directory as train.py. Each file contains a drug ID, a drug represented as a SMILES string, and a corresponding Y label.
+This is a binary classification problem where the Y label has two possible values, 0 and 1. 
+You are required to complete the train.py script by implementing the logic to train a model. Experiment with different models and feature selection techniques to achieve better performance.
+Evaluate the model's performance using roc-auc as the primary metric. Once you are satisfied with the performance, use the test dataset to generate predictions probabilities and save the results in a file named submission.csv.
+Ensure that the changes you make to the script are tested and executed to verify their performance. Do not directly read any CSV files in your implementation.
+Note: non-deep learning models typically work better in this task.

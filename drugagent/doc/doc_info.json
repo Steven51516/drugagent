@@ -1,0 +1,22 @@
+[
+    {
+        "name": "dataset.txt",
+        "description": "Usage of the TDC library for downloading and splitting datasets. Use this only when the raw dataset is missing."
+    },
+    {
+        "name": "preprocess_drug.txt",
+        "description": "Utility functions for preprocessing drug SMILES data, including molecular fingerprinting(eg. morgan), molecule graph construction for GNNs, and other methods such as one-hot encoding for CNNs. Pretrained methods are NOT included."
+    },
+    {
+        "name": "preprocess_protein.txt",
+        "description": "Utility functions for preprocessing amino acid sequence data, including fingerprinting and other methods such as one-hot encoding for CNNs. Pretrained methods are not included. Functions processing protein pdb structures are not included."
+    },
+    {
+        "name": "pretrain_drug.txt",
+        "description": "Documentation covering utility functions for generating embeddings using pretrained models for drugs, along with guidance for fine-tuning a pretrained model."
+    },
+    {
+        "name": "pretrain_protein.txt",
+        "description": "Documentation covering utility functions for generating embeddings using pretrained models for proteins."
+    }
+]

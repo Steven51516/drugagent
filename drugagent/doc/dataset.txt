@@ -1,0 +1,504 @@
+ADME Property Prediction Task Overview
+Definition: A small-molecule drug is a chemical and it needs to travel from the site of administration (e.g., oral) to the site of action (e.g., a tissue) and then decomposes, exits the body. To do that safely and efficaciously, the chemical is required to have numerous ideal absorption, distribution, metabolism, and excretion (ADME) properties. This task aims to predict various kinds of ADME properties accurately given a drug candidate's structural information.
+
+Impact: Poor ADME profile is the most prominent reason of failure in clinical trials. Thus, an early and accurate ADME profiling during the discovery stage is a necessary condition for successful development of small-molecule candidate.
+
+Generalization: In real-world discovery, the drug structures of interest evolve over time. Thus, ADME prediction requires a model to generalize to a set of unseen drugs that are structurally distant to the known drug set. While time information is usually unavailable for many datasets, one way to approximate the similar effect is via scaffold split, where it forces training and test set have distant molecular structures.
+
+Product: Small-molecule.
+
+Pipeline: Efficacy and safety - lead development and optimization.
+
+Absorption
+Absorption measures how a drug travels from the site of administration to site of action.
+
+Caco-2 (Cell Effective Permeability), Wang et al.
+Dataset Description: The human colon epithelial cancer cell line, Caco-2, is used as an in vitro model to simulate the human intestinal tissue. The experimental result on the rate of drug passing through the Caco-2 cells can approximate the rate at which the drug permeates through the human intestinal tissue.
+
+Task Description: Regression. Given a drug SMILES string, predict the Caco-2 cell effective permeability.
+
+Dataset Statistics: 906 drugs.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'Caco2_Wang')
+split = data.get_split()
+References:
+
+[1] Wang, NN et al, ADME Properties Evaluation in Drug Discovery: Prediction of Caco-2 Cell Permeability Using a Combination of NSGA-II and Boosting, Journal of Chemical Information and Modeling 2016 56 (4), 763-773
+
+Dataset License: Not Specified. CC BY 4.0.
+
+PAMPA Permeability, NCATS
+Dataset Description: PAMPA (parallel artificial membrane permeability assay) is a commonly employed assay to evaluate drug permeability across the cellular membrane. PAMPA is a non-cell-based, low-cost and high-throughput alternative to cellular models. Although PAMPA does not model active and efflux transporters, it still provides permeability values that are useful for absorption prediction because the majority of drugs are absorbed by passive diffusion through the membrane.
+
+Task Description: Binary classification. Given a compound's SMILES string, predict whether it is has high permeability (1) or low-to-moderate permeability (0) in PAMPA assay.
+
+Dataset Statistics: NCATS set - 2035 compounds; Approved drugs set - 142 drugs.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'PAMPA_NCATS')
+split = data.get_split()
+Note: If you want to obtain an independent validation set with market approved drugs, you can do:
+
+df = data.get_approved_set()
+References:
+
+[1] Siramshetty, V.B., Shah, P., et al. “Validating ADME QSAR Models Using Marketed Drugs.” SLAS Discovery 2021 Dec;26(10):1326-1336. doi: 10.1177/24725552211017520.
+
+Dataset License: Not Specified. CC BY 4.0.
+
+HIA (Human Intestinal Absorption), Hou et al.
+Dataset Description: When a drug is orally administered, it needs to be absorbed from the human gastrointestinal system into the bloodstream of the human body. This ability of absorption is called human intestinal absorption (HIA) and it is crucial for a drug to be delivered to the target.
+
+Task Description: Binary classification. Given a drug SMILES string, predict the activity of HIA.
+
+Dataset Statistics: 578 drugs.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'HIA_Hou')
+split = data.get_split()
+References:
+
+[1] Hou T et al. ADME evaluation in drug discovery. 7. Prediction of oral absorption by correlation and classification. J Chem Inf Model. 2007;47(1):208-218.
+
+Dataset License: Not Specified. CC BY 4.0.
+
+Pgp (P-glycoprotein) Inhibition, Broccatelli et al.
+Dataset Description: P-glycoprotein (Pgp) is an ABC transporter protein involved in intestinal absorption, drug metabolism, and brain penetration, and its inhibition can seriously alter a drug's bioavailability and safety. In addition, inhibitors of Pgp can be used to overcome multidrug resistance.
+
+Task Description: Binary classification. Given a drug SMILES string, predict the activity of Pgp inhibition.
+
+Dataset Statistics: 1,212 drugs.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'Pgp_Broccatelli')
+split = data.get_split()
+References:
+
+[1] Broccatelli et al., A Novel Approach for Predicting P-Glycoprotein (ABCB1) Inhibition Using Molecular Interaction Fields. Journal of Medicinal Chemistry, 2011 54 (6), 1740-1751
+
+Dataset License: Not Specified. CC BY 4.0.
+
+Bioavailability, Ma et al.
+Dataset Description: Oral bioavailability is defined as “the rate and extent to which the active ingredient or active moiety is absorbed from a drug product and becomes available at the site of action”.
+
+Task Description: Binary classification. Given a drug SMILES string, predict the activity of bioavailability.
+
+Dataset Statistics: 640 drugs.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'Bioavailability_Ma')
+split = data.get_split()
+References:
+
+[1] Ma, Chang-Ying, et al. “Prediction models of human plasma protein binding rate and oral bioavailability derived by using GA–CG–SVM method.” Journal of pharmaceutical and biomedical analysis 47.4-5 (2008): 677-682.
+
+Dataset License: Not Specified. CC BY 4.0.
+
+Lipophilicity, AstraZeneca
+Dataset Description: Lipophilicity measures the ability of a drug to dissolve in a lipid (e.g. fats, oils) environment. High lipophilicity often leads to high rate of metabolism, poor solubility, high turn-over, and low absorption. From MoleculeNet.
+
+Task Description: Regression. Given a drug SMILES string, predict the activity of lipophilicity.
+
+Dataset Statistics: 4,200 drugs.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'Lipophilicity_AstraZeneca')
+split = data.get_split()
+References:
+
+[1] AstraZeneca. Experimental in vitro Dmpk and physicochemical data on a set of publicly disclosed compounds (2016)
+
+[2] Wu, Zhenqin, et al. “MoleculeNet: a benchmark for molecular machine learning.” Chemical science 9.2 (2018): 513-530.
+
+Dataset License: Not Specified. CC BY 4.0.
+
+Solubility, AqSolDB
+Dataset Description: Aqeuous solubility measures a drug's ability to dissolve in water. Poor water solubility could lead to slow drug absorptions, inadequate bioavailablity and even induce toxicity. More than 40% of new chemical entities are not soluble.
+
+Task Description: Regression. Given a drug SMILES string, predict the activity of solubility.
+
+Dataset Statistics: 9,982 drugs.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'Solubility_AqSolDB')
+split = data.get_split()
+References:
+
+[1] Sorkun, M.C., Khetan, A. & Er, S. AqSolDB, a curated reference set of aqueous solubility and 2D descriptors for a diverse set of compounds. Sci Data 6, 143 (2019).
+
+Dataset License: CC BY 4.0.
+
+Hydration Free Energy, FreeSolv
+Dataset Description: The Free Solvation Database, FreeSolv(SAMPL), provides experimental and calculated hydration free energy of small molecules in water. The calculated values are derived from alchemical free energy calculations using molecular dynamics simulations. From MoleculeNet.
+
+Task Description: Regression. Given a drug SMILES string, predict the activity of hydration free energy.
+
+Dataset Statistics: 642 drugs.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'HydrationFreeEnergy_FreeSolv')
+split = data.get_split()
+References:
+
+[1] Mobley, David L., and J. Peter Guthrie. “FreeSolv: a database of experimental and calculated hydration free energies, with input files.” Journal of computer-aided molecular design 28.7 (2014): 711-720.
+
+[2] Wu, Zhenqin, et al. “MoleculeNet: a benchmark for molecular machine learning.” Chemical science 9.2 (2018): 513-530.
+
+Dataset License: CC BY-NC-SA 4.0.
+
+Distribution
+Drug distribution refers to how drug moves to and from the various tissues of the body and the amount of drugs in the tissues.
+
+BBB (Blood-Brain Barrier), Martins et al.
+Dataset Description: As a membrane separating circulating blood and brain extracellular fluid, the blood-brain barrier (BBB) is the protection layer that blocks most foreign drugs. Thus the ability of a drug to penetrate the barrier to deliver to the site of action forms a crucial challenge in development of drugs for central nervous system From MoleculeNet.
+
+Task Description: Binary classification. Given a drug SMILES string, predict the activity of BBB.
+
+Dataset Statistics: 1,975 drugs.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'BBB_Martins')
+split = data.get_split()
+References:
+
+[1] Martins, Ines Filipa, et al. “A Bayesian approach to in silico blood-brain barrier penetration modeling.” Journal of chemical information and modeling 52.6 (2012): 1686-1697.
+
+[2] Wu, Zhenqin, et al. “MoleculeNet: a benchmark for molecular machine learning.” Chemical science 9.2 (2018): 513-530.
+
+Dataset License: Not Specified. CC BY 4.0.
+
+PPBR (Plasma Protein Binding Rate), AstraZeneca
+Dataset Description: The human plasma protein binding rate (PPBR) is expressed as the percentage of a drug bound to plasma proteins in the blood. This rate strongly affect a drug's efficiency of delivery. The less bound a drug is, the more efficiently it can traverse and diffuse to the site of actions. From a ChEMBL assay deposited by AstraZeneca.
+
+Task Description: Regression. Given a drug SMILES string, predict the rate of PPBR.
+
+Dataset Statistics: 1,614 drugs.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'PPBR_AZ')
+split = data.get_split()
+Note : [Started from 0.3.7] this dataset contains assay across five species. Across species, the PPBR would behave rather differently even for the same drug. Thus, in default, it only returns the homo sapiens subset. If you would like to retrieve other species, you can use the following code:
+
+data.get_other_species('Rattus norvegicus')
+# select from 'Canis lupus familiaris', 'Cavia porcellus', 'Homo sapiens', 'Mus musculus', 'Rattus norvegicus', 'all'
+References:
+
+[1] AstraZeneca. Experimental in vitro Dmpk and physicochemical data on a set of publicly disclosed compounds (2016)
+
+Dataset License: Not Specified. CC BY 4.0.
+
+VDss (Volumn of Distribution at steady state), Lombardo et al.
+Dataset Description: The volume of distribution at steady state (VDss) measures the degree of a drug's concentration in body tissue compared to concentration in blood. Higher VD indicates a higher distribution in the tissue and usually indicates the drug with high lipid solubility, low plasma protein binidng rate.
+
+Task Description: Regression. Given a drug SMILES string, predict the volume of distributon.
+
+Dataset Statistics: 1,130 drugs.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'VDss_Lombardo')
+split = data.get_split()
+References:
+
+[1] Lombardo, Franco, and Yankang Jing. “In silico prediction of volume of distribution in humans. Extensive data set and the exploration of linear and nonlinear methods coupled with molecular interaction fields descriptors.” Journal of Chemical Information and Modeling 56.10 (2016): 2042-2052.
+
+Dataset License: Not Specified. CC BY 4.0.
+
+Metabolism
+Drug metabolism measures how specialized enzymatic systems breakdown the drugs and it determines the duration and intensity of a drug's action.
+
+CYP P450 2C19 Inhibition, Veith et al.
+Dataset Description: The CYP P450 genes are essential in the breakdown (metabolism) of various molecules and chemicals within cells. A drug that can inhibit these enzymes would mean poor metabolism to this drug and other drugs, which could lead to drug-drug interactions and adverse effects. Specifically, the CYP2C19 gene provides instructions for making an enzyme called the endoplasmic reticulum, which is involved in protein processing and transport.
+
+Task Description: Binary Classification. Given a drug SMILES string, predict CYP2C19 inhibition.
+
+Dataset Statistics: 12,665 drugs.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'CYP2C19_Veith')
+split = data.get_split()
+References:
+
+[1] Veith, Henrike et al. “Comprehensive characterization of cytochrome P450 isozyme selectivity across chemical libraries.” Nature biotechnology vol. 27,11 (2009): 1050-5.
+
+Dataset License: CC BY 4.0.
+
+CYP P450 2D6 Inhibition, Veith et al.
+Dataset Description: The CYP P450 genes are involved in the formation and breakdown (metabolism) of various molecules and chemicals within cells. Specifically, CYP2D6 is primarily expressed in the liver. It is also highly expressed in areas of the central nervous system, including the substantia nigra.
+
+Task Description: Binary Classification. Given a drug SMILES string, predict CYP2D6 inhibition.
+
+Dataset Statistics: 13,130 drugs.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'CYP2D6_Veith')
+split = data.get_split()
+References:
+
+[1] Veith, Henrike et al. “Comprehensive characterization of cytochrome P450 isozyme selectivity across chemical libraries.” Nature biotechnology vol. 27,11 (2009): 1050-5.
+
+Dataset License: CC BY 4.0.
+
+CYP P450 3A4 Inhibition, Veith et al.
+Dataset Description: The CYP P450 genes are involved in the formation and breakdown (metabolism) of various molecules and chemicals within cells. Specifically, CYP3A4 is an important enzyme in the body, mainly found in the liver and in the intestine. It oxidizes small foreign organic molecules (xenobiotics), such as toxins or drugs, so that they can be removed from the body.
+
+Task Description: Binary Classification. Given a drug SMILES string, predict CYP3A4 inhibition.
+
+Dataset Statistics: 12,328 drugs.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'CYP3A4_Veith')
+split = data.get_split()
+References:
+
+[1] Veith, Henrike et al. “Comprehensive characterization of cytochrome P450 isozyme selectivity across chemical libraries.” Nature biotechnology vol. 27,11 (2009): 1050-5.
+
+Dataset License: CC BY 4.0.
+
+CYP P450 1A2 Inhibition, Veith et al.
+Dataset Description: The CYP P450 genes are involved in the formation and breakdown (metabolism) of various molecules and chemicals within cells. Specifically, CYP1A2 localizes to the endoplasmic reticulum and its expression is induced by some polycyclic aromatic hydrocarbons (PAHs), some of which are found in cigarette smoke. It is able to metabolize some PAHs to carcinogenic intermediates. Other xenobiotic substrates for this enzyme include caffeine, aflatoxin B1, and acetaminophen.
+
+Task Description: Binary Classification. Given a drug SMILES string, predict CYP1A2 inhibition.
+
+Dataset Statistics: 12,579 drugs.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'CYP1A2_Veith')
+split = data.get_split()
+References:
+
+[1] Veith, Henrike et al. “Comprehensive characterization of cytochrome P450 isozyme selectivity across chemical libraries.” Nature biotechnology vol. 27,11 (2009): 1050-5.
+
+Dataset License: CC BY 4.0.
+
+CYP P450 2C9 Inhibition, Veith et al.
+Dataset Description: The CYP P450 genes are involved in the formation and breakdown (metabolism) of various molecules and chemicals within cells. Specifically, the CYP P450 2C9 plays a major role in the oxidation of both xenobiotic and endogenous compounds.
+
+Task Description: Binary Classification. Given a drug SMILES string, predict CYP2C9 inhibition.
+
+Dataset Statistics: 12,092 drugs.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'CYP2C9_Veith')
+split = data.get_split()
+References:
+
+[1] Veith, Henrike et al. “Comprehensive characterization of cytochrome P450 isozyme selectivity across chemical libraries.” Nature biotechnology vol. 27,11 (2009): 1050-5.
+
+Dataset License: CC BY 4.0.
+
+CYP2C9 Substrate, Carbon-Mangels et al.
+Dataset Description: CYP P450 2C9 plays a major role in the oxidation of both xenobiotic and endogenous compounds. Substrates are drugs that are metabolized by the enzyme. TDC used a dataset from [1], which merged information on substrates and nonsubstrates from six publications.
+
+Task Description: Binary Classification. Given a drug SMILES string, predict if it is a substrate to the enzyme.
+
+Dataset Statistics: 666 drugs.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'CYP2C9_Substrate_CarbonMangels')
+split = data.get_split()
+References:
+
+[1] Carbon‐Mangels, Miriam, and Michael C. Hutter. “Selecting relevant descriptors for classification by bayesian estimates: a comparison with decision trees and support vector machines approaches for disparate data sets.” Molecular informatics 30.10 (2011): 885-895.
+
+[2] Cheng, Feixiong, et al. “admetSAR: a comprehensive source and free tool for assessment of chemical ADMET properties.” (2012): 3099-3105.
+
+Dataset License: CC BY 4.0.
+
+CYP2D6 Substrate, Carbon-Mangels et al.
+Dataset Description: CYP2D6 is primarily expressed in the liver. It is also highly expressed in areas of the central nervous system, including the substantia nigra. TDC used a dataset from [1], which merged information on substrates and nonsubstrates from six publications.
+
+Task Description: Binary Classification. Given a drug SMILES string, predict if it is a substrate to the enzyme.
+
+Dataset Statistics: 664 drugs.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'CYP2D6_Substrate_CarbonMangels')
+split = data.get_split()
+References:
+
+[1] Carbon‐Mangels, Miriam, and Michael C. Hutter. “Selecting relevant descriptors for classification by bayesian estimates: a comparison with decision trees and support vector machines approaches for disparate data sets.” Molecular informatics 30.10 (2011): 885-895.
+
+[2] Cheng, Feixiong, et al. “admetSAR: a comprehensive source and free tool for assessment of chemical ADMET properties.” (2012): 3099-3105.
+
+Dataset License: CC BY 4.0.
+
+CYP3A4 Substrate, Carbon-Mangels et al.
+Dataset Description: CYP3A4 is an important enzyme in the body, mainly found in the liver and in the intestine. It oxidizes small foreign organic molecules (xenobiotics), such as toxins or drugs, so that they can be removed from the body. TDC used a dataset from [1], which merged information on substrates and nonsubstrates from six publications.
+
+Task Description: Binary Classification. Given a drug SMILES string, predict if it is a substrate to the enzyme.
+
+Dataset Statistics: 667 drugs.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'CYP3A4_Substrate_CarbonMangels')
+split = data.get_split()
+References:
+
+[1] Carbon‐Mangels, Miriam, and Michael C. Hutter. “Selecting relevant descriptors for classification by bayesian estimates: a comparison with decision trees and support vector machines approaches for disparate data sets.” Molecular informatics 30.10 (2011): 885-895.
+
+[2] Cheng, Feixiong, et al. “admetSAR: a comprehensive source and free tool for assessment of chemical ADMET properties.” (2012): 3099-3105.
+
+Dataset License: CC BY 4.0.
+
+Excretion
+Drug excretion is the removal of drugs from the body using various different routes of excretion, including urine, bile, sweat, saliva, tears, milk, and stool.
+
+Half Life, Obach et al.
+Dataset Description: Half life of a drug is the duration for the concentration of the drug in the body to be reduced by half. It measures the duration of actions of a drug. This dataset is from [1] and we obtain the deposited version under CHEMBL assay 1614674.
+
+Task Description: Regression. Given a drug SMILES string, predict the half life duration.
+
+Dataset Statistics: 667 drugs.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'Half_Life_Obach')
+split = data.get_split()
+References:
+
+[1] Obach, R. Scott, Franco Lombardo, and Nigel J. Waters. “Trend analysis of a database of intravenous pharmacokinetic parameters in humans for 670 drug compounds.” Drug Metabolism and Disposition 36.7 (2008): 1385-1405.
+
+Dataset License: Not Specified. CC BY 4.0.
+
+Clearance, AstraZeneca
+Dataset Description: Drug clearance is defined as the volume of plasma cleared of a drug over a specified time period and it measures the rate at which the active drug is removed from the body. This is a dataset curated from ChEMBL database containing experimental results on intrinsic clearance, deposited from AstraZeneca. It contains clearance measures from two experiments types, hepatocyte and microsomes. As many studies [2] have shown various clearance outcomes given these two different types, we separate them.
+
+Task Description: Regression. Given a drug SMILES string, predict the activity of clearance.
+
+Dataset Statistics: 1,102/1,020 drugs for microsome/hepatocyte clearance.
+
+Dataset Split: Random Split Scaffold Split
+
+from tdc.single_pred import ADME
+data = ADME(name = 'Clearance_Hepatocyte_AZ')
+# data = ADME(name = 'Clearance_Microsome_AZ')
+split = data.get_split()
+
+
+
+Drug-Target Interaction Prediction Task Overview
+Definition: The activity of a small-molecule drug is measured by its binding affinity with the target protein. Given a new target protein, the very first step is to screen a set of potential compounds to find their activity. Traditional method to gauge the affinities are through high-throughput screening wet-lab experiments. However, they are very expensive and are thus restricted by their abilities to search over a large set of candidates. Drug-target interaction prediction task aims to predict the interaction activity score in silico given only the accessible compound structural information and protein amino acid sequence.
+
+Impact: Machine learning models that can accurately predict affinities can not only save pharmaceutical research costs on reducing the amount of high-throughput screening, but also to enlarge the search space and avoid missing potential candidates.
+
+Generalization: Models require extrapolation on unseen compounds, unseen proteins, and unseen compound-protein pairs. Models also are expected to have consistent performance across a diverse set of disease and target groups.
+
+Product: Small-molecule.
+
+Pipeline: Activity - hit identification.
+
+BindingDB
+Dataset Description: BindingDB is a public, web-accessible database of measured binding affinities, focusing chiefly on the interactions of protein considered to be drug-targets with small, drug-like molecules.
+
+Task Description: Regression. Given the target amino acid sequence/compound SMILES string, predict their binding affinity.
+
+Dataset Statistics: (# of DTI pairs, # of drugs, # of proteins) 52,284/10,665/1,413 for Kd, 991,486/549,205/5,078 for IC50, 375,032/174,662/3,070 for Ki.
+
+Dataset Split: Random Split Cold Drug Split Cold Protein Split
+
+Note: BindingDB is the collection of many assays. Since different assays use different metrics, TDC separates them as separate datasets. Specifically, it has four datasets with Kd, IC50, Ki as the units.
+
+Tips: Transforming to log-scale pIC50, pKi, and pKd can usually lead to more stable training. You can achieve this transformation via here. Checkout the data processing page for binarization, label distribution visualization, edge list/DGL/PyTorch graph transformation.
+
+from tdc.multi_pred import DTI
+data = DTI(name = 'BindingDB_Kd')
+# data = DTI(name = 'BindingDB_IC50')
+# data = DTI(name = 'BindingDB_Ki')
+split = data.get_split()
+Note: Many DTI pairs have same sequence information but different binding affinities due to different experimental assays. To harmonize them, you can use the below function to retrieve either the maximum affinity or the mean for the duplicated pair:
+
+from tdc.multi_pred import DTI
+data = DTI(name = 'BindingDB_Kd')
+data.harmonize_affinities(mode = 'max_affinity')
+# data.harmonize_affinities(mode = 'mean')
+References:
+
+[1] Liu, Tiqing, et al. “BindingDB: a web-accessible database of experimentally determined protein–ligand binding affinities.” Nucleic acids research 35.suppl_1 (2007): D198-D201.
+
+[2] Huang, Kexin, et al. “DeepPurpose: a Deep Learning Library for Drug-Target Interaction Prediction” Bioinformatics.
+
+Dataset License: CC BY 3.0 US.
+
+DAVIS
+Dataset Description: The interaction of 72 kinase inhibitors with 442 kinases covering >80% of the human catalytic protein kinome.
+
+Task Description: Regression. Given the target amino acid sequence/compound SMILES string, predict their binding affinity.
+
+Dataset Statistics: 0.3.2 Update: 25,772 DTI pairs, 68 drugs, 379 proteins. Before: 27,621 DTI pairs, 68 drugs, 379 proteins.
+
+Dataset Split: Random Split Cold Drug Split Cold Protein Split
+
+Tips: Transforming to log-scale pIC50, pKi, and pKd can usually lead to more stable training. You can achieve this transformation via here. Checkout the data processing page for binarization, label distribution visualization, edge list/DGL/PyTorch graph transformation.
+
+from tdc.multi_pred import DTI
+data = DTI(name = 'DAVIS')
+split = data.get_split()
+References:
+
+[1] Davis, M., Hunt, J., Herrgard, S. et al. Comprehensive analysis of kinase inhibitor selectivity. Nat Biotechnol 29, 1046–1051 (2011).
+
+[2] Huang, Kexin, et al. “DeepPurpose: a Deep Learning Library for Drug-Target Interaction Prediction” Bioinformatics.
+
+Dataset License: Not Specified. CC BY 4.0.
+
+KIBA
+Dataset Description: Toward making use of the complementary information captured by the various bioactivity types, including IC50, K(i), and K(d), Tang et al. introduces a model-based integration approach, termed KIBA to generate an integrated drug-target bioactivity matrix.
+
+Task Description: Regression. Given the target amino acid sequence/compound SMILES string, predict their binding affinity.
+
+Dataset Statistics: 0.3.2 Update: 117,657 DTI pairs, 2,068 drugs, 229 proteins. Before: 118,036 DTI pairs, 2,068 drugs, 229 proteins.
+
+Dataset Split: Random Split Cold Drug Split Cold Protein Split
+
+Tips: Checkout the data processing page for binarization, label distribution visualization, edge list/DGL/PyTorch graph transformation.
+
+from tdc.multi_pred import DTI
+data = DTI(name = 'KIBA')
+split = data.get_split()
+References:
+
+[1] Tang J, Szwajda A, Shakyawar S, et al. Making sense of large-scale kinase inhibitor bioactivity data sets: a comparative and integrative analysis. J Chem Inf Model. 2014;54(3):735-743.
+
+[2] Huang, Kexin, et al. “DeepPurpose: a Deep Learning Library for Drug-Target Interaction Prediction” Bioinformatics.
+
+Dataset License: Not Specified. CC BY 4.0.

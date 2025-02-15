@@ -1,0 +1,36 @@
+Part 1: Generating Embeddings with Pretrained Models
+
+Description:
+This section demonstrates how to generate molecular embeddings using pretrained models through the DrugFeaturizer class with the chemberta method. These embeddings are helpful for various downstream tasks such as molecule classification, regression, and similarity search. The ChemBERTa model generates 384-dimensional embeddings, which represent molecular features learned from large datasets.
+
+How to Use:
+
+Import the DrugFeaturizer class:
+from agent_tools import DrugFeaturizer
+
+Create a DrugFeaturizer object with the chemberta method:
+featurizer = DrugFeaturizer(method="chemberta")
+
+Use the DrugFeaturizer object to generate embeddings for a SMILES string:
+smile = "Your smile"
+embedding = featurizer(smile)
+ The output will be a numpy array representing the embedding:
+# np.array([0.1234, -0.5678, 0.3456, .....]) #shape = (384,)
+
+################################################
+Part 2: Fine-tuning Pretrained Models
+
+Description: In this section, we will discuss how to fine-tune pretrained models for specific tasks. Fine-tuning allows the model to adapt its learned representations to better fit your task.
+
+How to Fine-tune:
+1. Import the necessary libraries from the `transformers` library:
+   from transformers import AutoModelForMaskedLM, AutoTokenizer
+
+2. Load the pretrained model and tokenizer:
+   model_path = "DeepChem/ChemBERTa-77M-MTR"
+   tokenizer = AutoTokenizer.from_pretrained(model_path)
+   model = AutoModelForMaskedLM.from_pretrained(model_path)
+
+3. Prepare the data for fine-tuning and fine-tune the model on your custom task:
+
+
