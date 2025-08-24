@@ -128,7 +128,7 @@ def edit_script(script_name, edit_instruction, save_name, work_dir = ".", **kwar
         with open(tools_json_path, "r") as tools_file:
             try:
                 tools_data = json.load(tools_file)
-                tools_info = f"\nAvailable tools: {tools_data}"
+                tools_info = f"\nAvailable tools: {tools_data}. You should strictly follow the provided API format."
             except json.JSONDecodeError:
                 tools_info = "\n(Note: tools.json exists but could not be parsed.)"
 

@@ -1,14 +1,11 @@
-
-""" 
-This file is the entry point for MLAgentBench.
-"""
-
 import argparse
 import sys
 from drugagent import LLM
 from drugagent.environment import Environment
-from drugagent.agents.agent import Agent, SimpleActionAgent, ReasoningActionAgent
 import os
+
+
+# os.environ['OPENAI_API_KEY'] = "..." # add your api
 
 def run(args):
     with Environment(args) as env:
@@ -36,12 +33,12 @@ if __name__ == "__main__":
     parser.add_argument("--task", type=str, default="debug", help="task name")
     parser.add_argument("--log-dir", type=str, default="./logs", help="log dir")
     parser.add_argument("--work-dir", type=str, default="./workspace", help="work dir")
-    parser.add_argument("--max-steps", type=int, default=100, help="number of steps")
+    parser.add_argument("--max-steps", type=int, default=150, help="number of steps")
     parser.add_argument("--max-time", type=int, default=5* 60 * 60, help="max time")
     parser.add_argument("--device", type=int, default=0, help="device id")
     parser.add_argument("--python", type=str, default="python", help="python command")
     parser.add_argument("--interactive", action="store_true", help="interactive mode")
-    parser.add_argument("--resume", type=str, default=None, help="resume from a previous run")
+    parser.add_argument("--resume", type=str, default=None, help="resume from a previous run") # do not support resume for now
     parser.add_argument("--resume-step", type=int, default=0, help="the step to resume from")
 
     # general agent configs
@@ -57,15 +54,15 @@ if __name__ == "__main__":
     parser.add_argument("--actions-add-to-prompt", type=str, nargs='+', default=[], help="actions to add")
     parser.add_argument("--retrieval", action="store_true", help="enable retrieval")
     parser.add_argument("--valid-format-entires", type=str, nargs='+', default=None, help="valid format entries")
-    parser.add_argument("--max-steps-in-context", type=int, default=3, help="max steps in context")
+    parser.add_argument("--max-steps-in-context", type=int, default=6, help="max steps in context")
     parser.add_argument("--max-observation-steps-in-context", type=int, default=3, help="max observation steps in context")
     parser.add_argument("--max-retries", type=int, default=5, help="max retries")
 
     parser.add_argument("--planner-max-steps", type=int, default=30, help="max iterations for planner agent")
-    parser.add_argument("--draft-max-steps", type=int, default=30, help="max iterations to explore a single idea")
+    parser.add_argument("--draft-max-steps", type=int, default=20, help="max iterations to explore a single idea")
     # parser.add_argument("--refine-max-steps", type=int, default=15, help="max iterations to optimize hyperparameteres")
     parser.add_argument("--stop-idea-num", type=int, default=3, help="max ideas to explore")
-    parser.add_argument("--init-idea-num", type=int, default=5, help="number of ideas to initialize")
+    parser.add_argument("--init-idea-num", type=int, default=3, help="number of ideas to initialize")
 
 
     # langchain configs

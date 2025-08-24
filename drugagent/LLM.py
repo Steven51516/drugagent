@@ -26,7 +26,7 @@ def log_to_file(log_file, prompt, completion, model):
 
 def complete_text(prompt, log_file, model, **kwargs):
     """Complete text using the specified model with appropriate API, with retries on failure."""
-    max_retries = 3
+    max_retries = 5
     for attempt in range(max_retries):
         try:
             response = completion(
@@ -41,8 +41,8 @@ def complete_text(prompt, log_file, model, **kwargs):
 
         except Exception as e:
             if attempt < max_retries - 1:
-                print(f"Error occurred: {e}. Retrying in 10 seconds... (Attempt {attempt + 1}/{max_retries})")
-                time.sleep(10)
+                print(f"Error occurred: {e}. Retrying in 20 seconds... (Attempt {attempt + 1}/{max_retries})")
+                time.sleep(20)
             else:
                 print(f"Error occurred: {e}. Max retries reached. Raising exception.")
                 raise  # Re-raise the last exception after max retries

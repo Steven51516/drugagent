@@ -49,13 +49,13 @@ def reflect_domain_knowledge(research_problem = "", curr_idea = "",  work_dir = 
 
 
 INSTRUCTOR_ACTIONS = [
-    ActionInfo(
-        name="Reflect Domain Knowledge",
-        description="Consider the steps involved in a research idea that may require specialized domain knowledge.",
-        usage={},
-        return_value="The outcome will be a reflection on the potential steps.",
-        function=reflect_domain_knowledge
-    ),
+    # ActionInfo(
+    #     name="Reflect Domain Knowledge",
+    #     description="Consider the steps involved in a research idea that may require specialized domain knowledge.",
+    #     usage={},
+    #     return_value="The outcome will be a reflection on the potential steps.",
+    #     function=reflect_domain_knowledge
+    # ),
     ActionInfo(
         name="Draft Answer",
         description="Use this action to provide a draft answer to the current task.",
@@ -71,7 +71,7 @@ INSTRUCTOR_ACTIONS = [
         name="Consult Archive Agent",
         description="Ask a coding question to the archive agent, which creates a tool for you. The archive agent has access to specific domain knowledge, which it will use to formulate a response. The knowledge base includes very niche content, such as detailed technical or API documentation, which is typically outside of LLM's expertise.",
         usage={
-            "domain_description": "A description of the domain of knowledge. The expert uses this description to perform a similarity check against the available domain descriptions.",
+            "domain_description": "A description of the domain of knowledge. The expert uses this description to perform a similarity check against the available domain descriptions. It should be about preprocess drug or proprocess protein each time , must not be both",
             "name": "The name of the tool for future reference.",
             "question": "A detailed description of the tool's functionality."
         },

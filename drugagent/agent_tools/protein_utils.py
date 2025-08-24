@@ -4,6 +4,8 @@ import numpy as np
 import torch
 from functools import lru_cache
 from sklearn.preprocessing import OneHotEncoder
+import os
+import pickle
 
 
 def protein2quasi(s):
@@ -85,8 +87,7 @@ def _load_esm_model(model_name: str = "esm1b_t33_650M_UR50S"):
 
     return torch.hub.load("facebookresearch/esm", model_name)
 
-import os
-import pickle
+
 embed_dict = None
 embed_file_path = os.path.join(os.path.dirname(__file__), "protein_to_esm_embedding.pkl")
 if os.path.exists(embed_file_path):

@@ -6,12 +6,31 @@ from drugagent.LLM import complete_text_fast, complete_text
 from drugagent.schema import Action
 from .agent import Agent
 import re
+import json
 
+def load_tools_info(max_display=5):
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    json_path = os.path.join(base_dir, "..", "doc", "doc_info.json")
 
+    with open(json_path, "r") as f:
+        tools = json.load(f)
+
+    filtered_tools =tools[:max_display]
+
+    display_str = ""
+    for tool in filtered_tools:
+        # remove extension like .txt if present
+        name = os.path.splitext(tool['name'])[0]
+        display_str += f"NAME: {name}\nDESCRIPTION: {tool['description']}\n\n"
+
+    return display_str.strip()
+
+meta = load_tools_info()
 
 initial_prompt = """
-You are a helpful research planner.  
-- Your goal is to manage an idea space and iteratively search for a high-performing and actionable idea. You have access to the following tools:  
+You are an expert in computational biology and machine learning, acting as a helpful research planner. 
+
+Your goal is to manage an idea space and iteratively search for a high-performing and actionable idea. You have access to the following tools:  
 
 {tools_prompt}  
 
@@ -21,11 +40,16 @@ You do not have any prior knowledge about this problem.
 
 Follow these instructions carefully and do not forget them:  
 
-- Begin by initializing the idea space with `NUM={init_idea_num}`.
+- Begin by initializing the idea space with {init_idea_num} ideas.
 - Develop a high-level plan to manage the idea space and record it in the Idea Space Management. You can revise the plan later.  
 - Highlight supporting experimental results and reasoning before drawing conclusions.
-- Do not worry about implementing the ideas, as the Instructor Agent will handle that. You can pass an idea to the Instructor Agent using the "Investigate Idea" action.
-- You have no knowledge of the Instructor Agent's capabilities at the beginning, so start with a simple baseline idea (eg. non-deep learning approach) without ensembling or hyperparameter optimization. You can adjust the complexity to search for more high-performing ideas as you learn about the Instructor Agent's capabilities through obervations.
+- Do not implement ideas directly. The Instructor Agent is responsible for implementation. You may delegate an idea using the "Investigate Idea" action.
+- The Instructor Agent has access to the following categories of external tools (max 5 shown):  
+
+{meta}
+
+- Begin exploration with a simple baseline idea (e.g., a non-deep learning method, without ensembling or hyperparameter optimization). Increase complexity after gaining insight from early results.
+- The Instructor does not have access to results or code from previous idea explorations. It will always start from scratch when exploring new ideas. Therefore, avoid instructions such as refining a previous idea.
 - Stop early and make a final submission after investigating `{early_stopping}` ideas.
 
 Always respond in this exact format:  
@@ -37,7 +61,7 @@ Always respond in this exact format:
 format_prompt_dict = {
     "Reflection": "What does the observation mean? If there is an error, what caused the error and how to debug?",
     "Idea Space Management": "The current idea space, with current status and confirmed results of each idea briefly annotated. You should not include any implementation plan of the idea as that is managed by the Instructor. It must only include progress that has been made by previous steps. If there is any update, enclose the new update text in double asterisks **like this**. If there is no update, just copy the previous step Research Plan and Status. The high level plan from the previous step should be fully retained, unless it is intentionally revised.",
-    "Knowledge Evaluation" : "Evaluate the Instructor's knowledge, which may inform future idea selection.", 
+    "Knowledge Evaluation" : "Assess the evidence and reasoning provided by the Instructor Agent. This may include correctness, completeness, or usefulness of results, and should inform future idea selection.", 
     "Fact Check": "List all objective statements in the updates to Idea Space Management one by one and point out whether it is guessed versus directly confirmed by the previous observation directly above.",
     "Thought": "What you are currently doing, what actions to perform and why",
     "Action": "the action to take, should be one of the names of the tools",
@@ -53,7 +77,7 @@ class PlannerAgent(Agent):
         self.valid_format_entires = ["Reflection",  "Idea Space Management", "Knowledge Evaluation", "Fact Check", "Thought","Action", "Action Input"] # use all entries by default
         if args.valid_format_entires:
             self.valid_format_entires = args.valid_format_entires
-        self.initial_prompt = initial_prompt.format(tools_prompt=self.tools_prompt, init_idea_num = args.init_idea_num, tool_names=self.prompt_tool_names,  task_description=env.research_problem, early_stopping = self.args.stop_idea_num, format_prompt="\n".join([f"{k}: {format_prompt_dict[k]}" for k in self.valid_format_entires]))
+        self.initial_prompt = initial_prompt.format(tools_prompt=self.tools_prompt, init_idea_num = args.init_idea_num, tool_names=self.prompt_tool_names,  task_description=env.research_problem, early_stopping = self.args.stop_idea_num, format_prompt="\n".join([f"{k}: {format_prompt_dict[k]}" for k in self.valid_format_entires]), meta = meta)
        
 
     def run(self, env):

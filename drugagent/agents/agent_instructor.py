@@ -6,11 +6,26 @@ from drugagent.LLM import complete_text_fast, complete_text
 from drugagent.schema import Action
 from .agent import Agent
 import re
+import json
 
-#TODO move this to doc folder
-doc_meta = """
-The Archive agent has access to these four types of domain knowledge: 1. Preprocess drug data  2.Preprocess protein data  3. Pretrained model information about drugs 4.Pretrained model information about proteins
-"""
+def load_tools_info(max_display=5):
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    json_path = os.path.join(base_dir, "..", "doc", "doc_info.json")
+
+    with open(json_path, "r") as f:
+        tools = json.load(f)
+
+    filtered_tools =tools[:max_display]
+
+    display_str = ""
+    for tool in filtered_tools:
+        name = os.path.splitext(tool['name'])[0]
+        display_str += f"NAME: {name}\nDESCRIPTION: {tool['description']}\n\n"
+
+    return display_str.strip()
+
+meta = load_tools_info()
+
 
 initial_prompt = """
 You are a helpful research instructor. Your goal is to assist the planner agent in investigating the idea `{idea_description}` for a research problem. You have access to the following tools:  
@@ -18,12 +33,11 @@ You are a helpful research instructor. Your goal is to assist the planner agent 
 
 Your objective is to gather the appropriate domain tools for the task and then move into the coding stage to create a runnable draft of the solution. Do not worry about optimizations such as hyperparameter tuning or ensembling at this stage.
 
-1. Reflect on the domain knowledge needed for the task using the available tools.
-2. Based on the required domain knowledge for the task and idea, consult the archive agent iteratively until you have gathered all the necessary tools before moving to the coding stage.
-    {doc_meta}
-    - Only construct domain tools relevant to your idea. You likely will not need all categories of tools. You should consult only one type at a time. Do not consult for information not in the above list
+- Based on the required domain knowledge for the task and idea, consult the Archive Agent iteratively until you have gathered all the necessary tools before moving to the coding stage. The Archive Agent has access to the following categories of external tools (max 5 shown):  
+    {meta}
+    - Only construct domain tools relevant to your idea. You likely will not need all categories of tools. You should consult only one category at a time (eg. only for protien or only for drug). Do not consult for information not in the above list.
     - Be specific in your tool description according to the idea you are investigating, as the archive agent can provide better answers if your inquiry is more focused.
-3. After gathering the necessary tools, proceed with coding and debug as needed.
+- After gathering the necessary tools, proceed with coding and debug as needed.
 
 Research Problem: {task_description}
 
@@ -36,13 +50,15 @@ Follow these instructions and do not forget them:
 - Research Plan and Status should well organized and succinctly keep track of 1) high level plan (can be revised), 2) what steps have been done and what steps are in progress, 3) short results and conclusions of each step after it has been performed. 
 - Research Plan and Status must only include progress that has been made by previous steps. It should not include results not directly confirmed by the previous observation. 
 - Performance numbers and estimates can only be confirmed and included in the status by running the code and observing the output.
-- Follow the plan and try to achieve the goal as straightforwardly as possible.
-- Highlight the supporting experiment results and reasoning before drawing any conclusions. 
-- Strictly follow the idea `{idea_description}` and only create tools relevant to its implementation. Do not explore other ideas.
+- Strictly follow the idea `{idea_description}` and do not explore other ideas.
+- The starter code is train.py. 
 - Be specific when editing the script, including details such as your high-level plan to implement the idea and the tools to use. Ensure you understand what is in the starter file before attempting any modifications.
 - Respond with only one action and action input at a time.
 - You may create multiple files if needed, but ensure there is only one final submission file, such as `train.py`. Track this file in the plan.
 - If you believe you have successfully implemented the solution and have evidence from executing it, you can use the "Draft Answer" action to submit your answer. You can submit only once, so double-check that you have achieved the goal before submitting.
+- All Domain Tools are libraries, and their source code is not modifiable.
+- You should always execute the correct version of submission file and produce a valid output before drafting an answer.
+- Be careful not to overwrite your submission files. This way, you can re-execute and submit the earlier version if later versions perform worse.
 
 Always respond in this format exactly:
 {format_prompt}
@@ -72,7 +88,7 @@ class InstructorAgent(Agent):
             self.valid_format_entires = args.valid_format_entires
         self.initial_prompt = ""
         self.idea = idea
-        self.initial_prompt = initial_prompt.format(tools_prompt=self.tools_prompt, tool_names=self.prompt_tool_names,  task_description=env.research_problem, idea_description = self.idea, initial_context = initial_context, doc_meta = doc_meta, format_prompt="\n".join([f"{k}: {format_prompt_dict[k]}" for k in self.valid_format_entires]))
+        self.initial_prompt = initial_prompt.format(tools_prompt=self.tools_prompt, tool_names=self.prompt_tool_names,  task_description=env.research_problem, idea_description = self.idea, initial_context = initial_context, meta = meta, format_prompt="\n".join([f"{k}: {format_prompt_dict[k]}" for k in self.valid_format_entires]))
 
 
     def run(self, env):

@@ -13,9 +13,12 @@ Guidelines:
 - Avoid vague terms and focus on actionable, distinct concepts.
 - Each idea should be centered around one concept(e.g., do not merge ideas like ideaA+ideaB; focus on ideaA).
 - Limit the number of ideas to {idea_num}.
-- Ensure at least one idea is simple to implement.
+- Ensure at least one idea is simple to implement. eg. non-deep learning methods are simpler, graph based method are hard.
+- If the task is 
 
 Additional Instruction: {idea_direction}
+
+A
 
 Example:
 For an experiment on image classification, your ideas might include:
@@ -57,16 +60,16 @@ def generate_idea(number_of_ideas, additional_info, research_problem = "",  **kw
 
 
 PLANNER_ACTIONS = [
-    ActionInfo(
-        name="Generate Idea",
-        description="Use this action to generate additional high-level research ideas for a specific problem.",
-        usage={
-            "number_of_ideas": "The number of ideas to generate.",
-            "additional_info": "Additional instructions for idea generation as a single string. This may include: 1. Preferences for the direction of the ideas. 2. Other information that may inform the idea generation process."
-        },
-        return_value="The outcome will be a description of all generated ideas.",
-        function=generate_idea
-    ),
+    # ActionInfo(
+    #     name="Generate Idea",
+    #     description="Use this action to generate additional high-level research ideas for a specific problem.",
+    #     usage={
+    #         "number_of_ideas": "The number of ideas to generate.",
+    #         "additional_info": "Additional instructions for idea generation as a single string. This may include: 1. Preferences for the direction of the ideas. 2. Other information that may inform the idea generation process."
+    #     },
+    #     return_value="The outcome will be a description of all generated ideas.",
+    #     function=generate_idea
+    # ),
     ActionInfo(
         name="Investigate Idea",
         description="Use this action to assign an idea to the instructor. The instructor will then attempt to implement the idea, which may result in success or failure.",

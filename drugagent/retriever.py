@@ -9,9 +9,7 @@ from drugagent.utils import extract_jsons
 current_script_dir = os.path.dirname(os.path.abspath(__file__))
 doc_dir = os.path.join(current_script_dir, 'doc')
 
-
-
-# IMPORTANT: As the documentations collected for case study is relatively short, we didn't use RAG based method to save resources. We suggest using the SmartScraperGraph library for RAG if needed.
+# TODO: As the documentations collected for case study is relatively short, we didn't use RAG based method to save resources. We suggest using RAG libraries (eg. scrapegraphai) for long doc if needed.
 
 # doc search function modified from https://github.com/SageMindAI/autogen-agi/blob/master/agents/agent_functions.py
 
@@ -92,7 +90,7 @@ Your goal is to answer the question based on your knowledge and the information 
     "Usage": "How to use it? Include input types, output types, and provide an example if applicable. Describe them in plain text, not additional JSON."
 }}
 
-*Note*: You are allowed to return only one tool. Choose the most relevant tool based on the research idea instead of using the entire document.
+*Note*: Return only one tool. Do not list multiple options. If there are several methods available (e.g., multiple fingerprinting types), choose the most relevant one for the research idea, not the entire set.
 """
 
 example_json = """
@@ -108,6 +106,15 @@ def consult_archive_agent_for_tool(domain_description, name, question, research_
                                     doc_dir=doc_dir, 
                                     work_dir=".", **kwargs):
     
+    json_path = os.path.join(work_dir, "tools.json")
+    if os.path.exists(json_path):
+        with open(json_path, "r") as f:
+            tools = json.load(f)
+        for tool in tools:
+            if tool.get("name") == name:
+                return "Tool already in tool list. Please proceed with another tool."
+        
+
     failure_prompt = f"Domain not found for domain description: {domain_description} and question: {question}. The Archive Agent cannot help on your question."
     # Load the JSON metadata file
     with open(os.path.join(doc_dir, "doc_info.json"), 'r') as f:

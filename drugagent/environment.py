@@ -282,12 +282,28 @@ class Environment:
             Note that the environment is restored to the state before any instructor edit. Please proceed to explore the next idea or select a final answer if terminate requirement is fulfilled.
             """
         else:
-            observation = "The Instructor failed to explore the idea."
+            observation = "The Instructor failed to explore the idea due to unkown reasons. Please consider alternative idea."
 
 
         print("The instructor returned after " + str(new_step_index - prev_step_index) +  " steps")
         self._idea_map[idea_id] = new_step_index
         self.restore_workspace(prev_step_index)
+
+        idea_json_path = os.path.join(self.log_dir, "idea.json")
+        if os.path.exists(idea_json_path):
+            with open(idea_json_path, "r") as f:
+                idea_data = json.load(f)
+        else:
+            idea_data = {}
+
+        idea_data[idea_id] = {
+            "step": new_step_index,
+            "report": action_input
+        }
+
+        with open(idea_json_path, "w") as f:
+            json.dump(idea_data, f, indent=2)
+
         return observation
 
 
@@ -331,6 +347,11 @@ class Environment:
                 shutil.copy2(src_path, dst_path)
 
     def run(self):
+        # idea = "Idea 3: Use an fingerprint for both protein and drug with svm"
+
+        # # idea = "Idea 1: Use SVM with fingerprint to extract features from drug."
+        # observation = self.create_instructor_agent_and_run(0, idea, initial_context="")
+        # print(observation)
         planner_actions = ["Reflection", "Generate Idea", "Understand File", "List Files", "Final Answer", "Investigate Idea", "Report Failure"]
         self._action_infos_dict["Planner"] = {key: item for key, item in self.action_infos.items() if key in planner_actions}
         planner_agent = PlannerAgent(self._args, self, "Planner")
@@ -338,12 +359,26 @@ class Environment:
         
 
     def is_final(self):
-        """Check if the task has reached a final state, either by reaching the maximum steps or time, or because the agent has submitted a final answer. """
-        
+        """Check if the task has reached a final state: max steps, max time, or final answer."""
         curr_step = len(self.trace.steps)
-        # check if any step is final answer
-        any_final_answer = any([s.action.name == "Final Answer" or s.action.name == "Report Failure" for s in self.trace.steps])
-        return curr_step >= self.args.max_steps or any_final_answer or time.time() - self.start_time > self.args.max_time
+
+        # Check if any step is a final answer or explicit failure
+        any_final_answer = any(
+            (s.action.name == "Final Answer" and s.observation == "end")
+            or s.action.name == "Report Failure"
+            for s in self.trace.steps
+        )
+
+        # Check conditions
+        step_exceeded = curr_step >= self.args.max_steps
+        time_exceeded = time.time() - self.start_time > self.args.max_time
+
+        if step_exceeded:
+            print(f"[Step Limit] Reached max_steps={self.args.max_steps}")
+        if time_exceeded:
+            print(f"[Time Limit] Exceeded max_time={self.args.max_time} seconds")
+
+        return step_exceeded or any_final_answer or time_exceeded
 
 
     def restore_final_answer_env(self, idea_id, **kwargs):
@@ -365,28 +400,29 @@ class Environment:
         action_name = action.name
         action_input = action.args
 
+
         if action_name == "Final Answer":
-            # TODO: Temp code for testing, need check similar to the else block
             if isinstance(action_input, dict):
                 self.restore_final_answer_env(**action_input)
-            observation = "end"
+                observation = "end"
+            else:
+                observation = "The action input needs to be a valid json with proper entries."
 
         elif action_name == "Report Failure":
             observation = "end"
 
         elif action_name == "Investigate Idea":
-            #TODO Temp code for testing, need check similar to the else block
-            try:
-                observation = self.create_instructor_agent_and_run(**action_input)
-            except Exception as e:
-                # should not happen
-                print("Step: ", curr_step, file=sys.stderr)
-                print(e, file=sys.stderr)
-                if "Connection aborted." in str(e):
-                    raise Exception("Connection aborted for crfm")
-                print(action)
-                print(action_input)
-                observation = f"EnvError: Error executing {action_name}. Error message: {str(e)}"
+            if isinstance(action_input, dict):
+                try:
+                    observation = self.create_instructor_agent_and_run(**action_input)
+                except Exception as e:
+                    print("Step: ", curr_step, file=sys.stderr)
+                    print(e, file=sys.stderr)
+                    print(action)
+                    print(action_input)
+                    observation = f"EnvError: Error executing {action_name}. Error message: {str(e)}"
+            else:
+                observation = "The action input needs to be a valid json with proper entries."
 
         elif self.is_final():
             observation = "The environment has shut down because the maximum number of steps or time has been reached. Please submit your final answer."
@@ -403,6 +439,7 @@ class Environment:
             {usage}
 }}"""
             invalid_action_error = f"The action input for {action_name} needs to be a valid json with proper entries. You may have missed the comma between entries. Please use the correct format and try again:\n{usage}"
+
 
             if isinstance(action_input, dict):
                 try:
@@ -434,7 +471,7 @@ class Environment:
 
 
         step_time = time.time()
-        curr_step = len(trace.steps) # TODO: Temp fix - another agent may change trace steps
+        curr_step = len(trace.steps) # Temp fix - instructor agent may change planner's trace steps
 
         trace.steps.append(Step(action, observation, step_time))
         self.save(curr_step)

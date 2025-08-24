@@ -33,6 +33,9 @@ DrugAgent is built upon the MLAgentBench project. We thank the original authors 
 
 # Quick Start
 
+DrugAgent uses [LiteLLM](https://github.com/BerriAI/litellm) for model integration.  
+Before running, please set up the API key for your chosen LLM according to the LiteLLM documentation.  
+
 To run our drugagent on admet task with openai API using gpt-4o-mini:
 
 ```
@@ -54,14 +57,47 @@ first_test/
         trace.json # interaction trace of the agent
         ...
 ```
+## Output Structure
 
-# Evaluation
-
-To run evaluation:
+By default, the agent saves the best answer file based on validation results in:
 ```
-python -m MLAgentBench.eval --log-folder <log_folder>  --task <task_name> --output-file <output_name>
+env_log/traces/step_final_files/
 ```
 
-This will evaluate all runs under <log_folder> as a json.
+You can also monitor all explored ideas and their statuses in:
+```
+env_log/idea.json
+```
+
+### Example `idea.json` log
+```json
+{
+  "1": {
+    "step": 7,
+    "report": {
+      "answer_file": "train.py",
+      "metric": "Validation ROC AUC Score: 0.789",
+      "report": "Implemented Logistic Regression on drug SMILES data. Used DrugFeaturizer for molecular fingerprints. Achieved validation ROC AUC of 0.789. Predictions saved as submission.csv."
+    }
+  },
+  "2": {
+    "step": 13,
+    "report": {
+      "answer_file": "train.py",
+      "metric": "Validation ROC AUC Score: 0.715",
+      "report": "Implemented Random Forest on PAMPA dataset using DrugFeaturizer. Achieved training ROC AUC of 1.0 and validation ROC AUC of 0.715. Extracted and visualized feature importances."
+    }
+  },
+  "3": {
+    "step": 18,
+    "report": {
+      "answer_file": "train.py",
+      "metric": "Validation ROC AUC Score: 0.716",
+      "report": "Implemented neural network with SMILES embeddings. Used DrugFeaturizer for preprocessing. Achieved training ROC AUC of 0.867 and validation ROC AUC of 0.716. Predictions saved as submission.csv."
+    }
+  }
+}
+```
+
 
 Note: As this is an early version intended for research use, some code styles may not be fully polished. We will continue to refine and update the project in future releases.

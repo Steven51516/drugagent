@@ -104,3 +104,22 @@ print(one_hot_matrix.shape)  # Output: (63 channels x 100 max sequence length)
 # The matrix will be a 63x100 array where each column corresponds to a character in the SMILES string
 # and each row represents a one-hot encoding of a character in the SMILES alphabet (defined in `smiles_char`).
 ##################################################
+
+Part 4: Generating Embeddings with Pretrained Models
+
+Description:
+This section demonstrates how to generate molecular embeddings using pretrained models through the DrugFeaturizer class with the chemberta method. These embeddings are helpful for various downstream tasks such as molecule classification, regression, and similarity search. The ChemBERTa model generates 384-dimensional embeddings, which represent molecular features learned from large datasets.
+
+How to Use:
+
+Import the DrugFeaturizer class:
+from agent_tools import DrugFeaturizer
+
+Create a DrugFeaturizer object with the chemberta method:
+featurizer = DrugFeaturizer(method="chemberta")
+
+Use the DrugFeaturizer object to generate embeddings for a SMILES string:
+smile = "Your smile"
+embedding = featurizer(smile)
+ The output will be a numpy array representing the embedding:
+# np.array([0.1234, -0.5678, 0.3456, .....]) #shape = (384,)

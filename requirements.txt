@@ -1,8 +1,7 @@
-
 numpy
 tensorflow
 torch
-torchvision
+rdkit
 transformers
 pandas
 litellm
@@ -13,3 +12,6 @@ pytdc
 keras
 xgboost
 anthropic
+tiktoken
+scikit_learn
+dacite
