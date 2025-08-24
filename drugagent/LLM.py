@@ -44,8 +44,11 @@ def complete_text(prompt, log_file, model, **kwargs):
                 print(f"Error occurred: {e}. Retrying in 20 seconds... (Attempt {attempt + 1}/{max_retries})")
                 time.sleep(20)
             else:
-                print(f"Error occurred: {e}. Max retries reached. Raising exception.")
-                raise  # Re-raise the last exception after max retries
+                error_msg = f"Error occurred: {e}. Max retries reached."
+                print(error_msg)
+                if log_file is not None:
+                    log_to_file(log_file, prompt, error_msg, model)
+                return str(e)  # return exception text instead of raising
 
 FAST_MODEL = "openai/gpt-4o-mini"
 def complete_text_fast(prompt, **kwargs):
