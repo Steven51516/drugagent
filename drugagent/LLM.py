@@ -48,7 +48,7 @@ def complete_text(prompt, log_file, model, **kwargs):
                 print(error_msg)
                 if log_file is not None:
                     log_to_file(log_file, prompt, error_msg, model)
-                return str(e)  # return exception text instead of raising
+                return str(e)
 
 FAST_MODEL = "openai/gpt-4o-mini"
 def complete_text_fast(prompt, **kwargs):
