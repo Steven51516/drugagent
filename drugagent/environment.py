@@ -286,7 +286,7 @@ class Environment:
 
 
         print("The instructor returned after " + str(new_step_index - prev_step_index) +  " steps")
-        self._idea_map[idea_id] = new_step_index
+        self._idea_map[str(idea_id)] = new_step_index
         self.restore_workspace(prev_step_index)
 
         idea_json_path = os.path.join(self.log_dir, "idea.json")
@@ -296,11 +296,10 @@ class Environment:
         else:
             idea_data = {}
 
-        idea_data[idea_id] = {
+        idea_data[str(idea_id)] = {
             "step": new_step_index,
             "report": action_input
         }
-
         with open(idea_json_path, "w") as f:
             json.dump(idea_data, f, indent=2)
 
@@ -382,6 +381,7 @@ class Environment:
 
 
     def restore_final_answer_env(self, idea_id, **kwargs):
+        idea_id = str(idea_id)
         final_index =  self._idea_map[idea_id]
         self.restore_workspace(final_index)
         # TODO refine the idea

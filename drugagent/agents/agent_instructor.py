@@ -35,9 +35,9 @@ Your objective is to gather the appropriate domain tools for the task and then m
 
 - Based on the required domain knowledge for the task and idea, consult the Archive Agent iteratively until you have gathered all the necessary tools before moving to the coding stage. The Archive Agent has access to the following categories of external tools (max 5 shown):  
     {meta}
-    - Only construct domain tools relevant to your idea. You likely will not need all categories of tools. You should consult only one category at a time (eg. only for protien or only for drug). Do not consult for information not in the above list.
+    - Only construct domain tools relevant to your idea. You should consult only one category at a time (eg. only for protien or only for drug). Do not consult for information not in the above list.
     - Be specific in your tool description according to the idea you are investigating, as the archive agent can provide better answers if your inquiry is more focused.
-- After gathering the necessary tools, proceed with coding and debug as needed.
+- Proceed to edit script only after you have gathered all the necessary tools.
 
 Research Problem: {task_description}
 
