@@ -3,61 +3,6 @@
 from ..schema import ActionInfo, EnvException
 from ..LLM import complete_text_fast, complete_text
 
-PROMPT_ROUND1 = """
-You are a computer science expert tasked with generating a variety of innovative ideas for a machine learning experiment using different computer science methods.
-
-Experiment Description: {query}
-
-Guidelines:
-- Present each idea as a clear and concise sentence, emphasizing specific computer science methods or concepts.
-- Avoid vague terms and focus on actionable, distinct concepts.
-- Each idea should be centered around one concept(e.g., do not merge ideas like ideaA+ideaB; focus on ideaA).
-- Limit the number of ideas to {idea_num}.
-- Ensure at least one idea is simple to implement. eg. non-deep learning methods are simpler, graph based method are hard.
-- If the task is 
-
-Additional Instruction: {idea_direction}
-
-A
-
-Example:
-For an experiment on image classification, your ideas might include:
-1. "Use CNN."
-2. "Fine-tune a pre-trained ResNet model."
-"""
-
-PROMPT_ROUND2 = """
-You are an expert in computational biology and chemistry. A computer scientist has proposed several computer science concepts that could be applied to a machine learning experiment: "{query}" with the following ideas: {ideas}. Your task is to refine these ideas by incorporating relevant computational biology concepts while ensuring practical feasibility.
-
-Guidelines:
-- Merge the computer science concept with the appropriate computational biology concept into a single, cohesive idea.
-- Focus on practical connections between raw biological data and the proposed machine learning techniques.
-- Keep the phrasing concise and high-level (~10 words), preserving the original format of the idea.
-- Provide essential refinements to ensure the idea's feasibility, avoiding excessive detail.
-- If an idea is not feasible, reject it and explain why.
-
-Scoring:
-- Rate each idea based on:
-  - "performance": A score from 1-10, with an explanation of the potential performance.
-  - "feasibility": A score from 1-10, indicating the likelihood of successful implementation, assuming the coder may be inexperienced.
-
-Response Format:
-For each idea, return the following:
-- "idea": The refined idea, combining computer science and computational biology concepts.
-- "performance": A score (1-10) with an explanation.
-- "feasibility": A score (1-10) with an explanation.
-
-- Use consistent phrasing for ideas requiring similar domain knowledge to avoid confusion.
-"""
-
-
-def generate_idea(number_of_ideas, additional_info, research_problem = "",  **kwargs):
-    get_idea_prompt = PROMPT_ROUND1.format(query=research_problem, idea_num=number_of_ideas, idea_direction=additional_info)
-    ideas = complete_text_fast(get_idea_prompt, log_file=kwargs["log_file"])
-    refine_idea_prompt = PROMPT_ROUND2.format(query=research_problem, ideas=ideas)
-    refined_ideas = complete_text_fast(refine_idea_prompt, log_file=kwargs["log_file"])
-    return refined_ideas
-
 
 PLANNER_ACTIONS = [
     # ActionInfo(

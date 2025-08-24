@@ -12,42 +12,6 @@ from ..retriever import consult_archive_agent_for_tool
 
 
 
-def reflect_domain_knowledge(research_problem = "", curr_idea = "",  work_dir = ".", **kwargs):
-
-    try:
-        content = read_file("train.py", work_dir=work_dir, **kwargs)
-    except:
-        content = ""
-
-    analyze_prompt = f"""
-    You have been assigned the task of analyzing the following coding problem to identify substeps that require domain-specific knowledge for an LLM Coder.
-    If starter code is provided, only include substeps that involve modifications to the starter code to implement the idea.
-
-    Domain knowledge refers to tasks that go beyond the general capabilities of a large language model (LLM). Examples of domain knowledge include:
-    1. Downloading raw biological data.
-    2. Processing raw biological data (e.g., SMILES strings, amino acid sequences).
-    3. Using APIs from domain-specific libraries.
-
-    General computer science knowledge and typical coding tasks do not count as domain knowledge. Examples include:
-    1. Implementing and training general machine learning algorithms.
-    2. Evaluating standard metrics (e.g., MAE, MSE).
-    3. Extracting features from a dataframe.
-    4. Analyzing a dataset.
-
-    For each step, label it as either (requires domain knowledge - reason) or (does not require domain knowledge).
-    Avoid unnecessary steps and aim to keep the plan clear and concise.
-
-    Task Description: {research_problem}
-
-    Idea Description (High Level): {curr_idea}
-
-    Starter Code: {content}
-    """
-
-    response =  complete_text_fast(analyze_prompt, log_file=kwargs["log_file"])
-    return response
-
-
 INSTRUCTOR_ACTIONS = [
     # ActionInfo(
     #     name="Reflect Domain Knowledge",
